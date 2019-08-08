@@ -1,0 +1,19 @@
+{
+  "name": "pubg-stats-server",
+  "version": "1.0.0",
+  "description": "Node/Express/Axios server for PUBG API calls",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Jacob Goskha",
+  "license": "MIT",
+  "dependencies": {
+    "axios": "^0.19.0",
+    "dotenv": "^8.0.0",
+    "express": "^4.17.1"
+  },
+  "devDependencies": {
+    "nodemon": "^1.19.1"
+  }
+}
