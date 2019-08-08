@@ -2,7 +2,6 @@ const express = require('express');
 const app = express();
 
 require('dotenv').config();
-const PORT = process.env.port || 5000;
 
 // TEST server api
 app.get('/', (req, res) =>
@@ -17,6 +16,8 @@ app.use('/api/pubg/lifetime', require('./routes/api/pubg/lifetime'));
 
 // Match API
 app.use('/api/pubg/match', require('./routes/api/pubg/match'));
+
+const PORT = process.env.port || 5000;
 
 app.listen(PORT, () => {
   console.log(`Server is running on port: ${PORT}`);

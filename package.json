@@ -4,7 +4,8 @@
   "description": "Node/Express/Axios server for PUBG API calls",
   "main": "server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node server",
+    "server": "nodemon server"
   },
   "author": "Jacob Goskha",
   "license": "MIT",
