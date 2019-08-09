@@ -9,9 +9,12 @@ module.exports = {
         '/seasons/lifetime'
       );
     },
-    season: function(accountId){
+    season: function(accountId) {
       //division.bro.officail... indicates the most current season
-      'https://api.pubg.com/shards/steam/players/'+ accountId + '/seasons/division.bro.official.pc-2018-04';
+      'https://api.pubg.com/shards/steam/players/' +
+        accountId +
+        '/seasons/division.bro.official.pc-2018-04';
+    }
   },
   example: {
     accountId: 'account.ae70c0ffc0db479ab5b464c25f702f48',
