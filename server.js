@@ -17,6 +17,9 @@ app.use('/api/pubg/lifetime', require('./routes/api/pubg/lifetime'));
 // Match API
 app.use('/api/pubg/match', require('./routes/api/pubg/match'));
 
+// Season API
+app.use('/api/pubg/season', require('./routes/api/pubg/season'));
+
 const PORT = process.env.port || 5000;
 
 app.listen(PORT, () => {
