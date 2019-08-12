@@ -6,12 +6,13 @@ const data = require('./exports');
 // @route   GET api/pubg/lifetime/:accountID
 // @desc    Returns Life time data
 // @access  Public with client
-router.get('/:accoundId', async (req, res) => {
-  const { accoundId } = req.params;
+router.get('/:accountId', async (req, res) => {
+  const { accountId } = req.params;
+  console.log('our params: ' + accountId);
   try {
     // Construct URL string with accoundID
-    const lifetimeUrlString = data.url.lifetime(accoundId);
-
+    const lifetimeUrlString = data.url.lifetime(accountId);
+    console.log(lifetimeUrlString);
     const response = await axios
       .get(lifetimeUrlString, {
         headers: {

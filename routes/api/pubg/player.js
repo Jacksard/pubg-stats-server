@@ -10,10 +10,10 @@ const data = require('./exports');
 // @desc    TEST
 // @access  Public
 router.get('/test/:thistest', (req, res) => {
-  const { test } = req.params;
+  const { thistest } = req.params;
   res.json({
     msg: process.env.API_KEY,
-    msg2: data.url.player + test
+    msg2: data.url.player + thistest
   });
 });
 
@@ -34,7 +34,10 @@ router.get('/:playerName', async (req, res) => {
       })
       .then(response => {
         console.log(response.data);
-        return response.data;
+
+        const playerObject = data.handleData.buildPlayerObject(response.data);
+
+        return playerObject;
       });
     res.json(response);
   } catch (err) {

@@ -21,6 +21,21 @@ module.exports = {
   example: {
     accountId: 'account.ae70c0ffc0db479ab5b464c25f702f48',
     matchId: 'e32b519e-0b43-438e-9f24-46aae784c51b'
+  },
+
+  handleData: {
+    buildPlayerObject: function(res) {
+      console.log('-0-------------');
+      console.log(res);
+      var myPlayerObject = {};
+      // Name
+      myPlayerObject.name = res.data[0].attributes.name;
+      // Last 5 matches
+      const matches = res.data[0].relationships.matches.data.slice(0, 5);
+      myPlayerObject.matches = matches;
+
+      return myPlayerObject;
+    }
   }
 };
 
