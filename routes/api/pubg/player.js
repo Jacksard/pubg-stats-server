@@ -21,6 +21,22 @@ router.get('/test/:thistest', (req, res) => {
 // @desc    Return the Initial data
 // @access  Public
 
+async function lifetime(accountId) {
+  console.log('Account Id: ' + accountId);
+  const myresult = await axios
+    .get(data.url.lifetime(accountId), {
+      headers: {
+        Authorization: 'Bearer ' + process.env.API_KEY,
+        Accept: 'application/vnd.api+json'
+      }
+    })
+    .then(response => {
+      console.log(response.data.data);
+      return response.data.data;
+    });
+  return myresult;
+}
+
 router.get('/:playerName', async (req, res) => {
   const { playerName } = req.params;
 
@@ -32,13 +48,16 @@ router.get('/:playerName', async (req, res) => {
           Accept: 'application/vnd.api+json'
         }
       })
-      .then(response => {
+      .then(async response => {
         console.log(response.data);
 
         const playerObject = data.handleData.buildPlayerObject(response.data);
+        const accountId = playerObject.id;
+        playerObject.lifetime = await lifetime(accountId);
 
         return playerObject;
       });
+
     res.json(response);
   } catch (err) {
     console.log(err.message);

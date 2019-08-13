@@ -24,18 +24,27 @@ module.exports = {
   },
 
   handleData: {
+    buildPlayerLifetime: function(accountId) {
+      return console.log(accountId);
+    },
+
     buildPlayerObject: function(res) {
-      console.log('-0-------------');
-      console.log(res);
-      var myPlayerObject = {};
+      var playerObject = {};
+
       // Name
-      myPlayerObject.name = res.data[0].attributes.name;
+      playerObject.name = res.data[0].attributes.name;
+
+      // Account Id
+      playerObject.id = res.data[0].id;
+
       // Last 5 matches
       const matches = res.data[0].relationships.matches.data.slice(0, 5);
-      myPlayerObject.matches = matches;
 
-      return myPlayerObject;
+      playerObject.matches = matches;
+
+      return playerObject;
     }
+    //buildPlayerLifetime: function(res) {}
   }
 };
 
