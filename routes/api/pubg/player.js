@@ -17,10 +17,7 @@ router.get('/test/:thistest', (req, res) => {
   });
 });
 
-// @route   GET api/pubg/player/PLAYERNAME
-// @desc    Return the Initial data
-// @access  Public
-
+// Axios call function for lifetime data
 async function lifetime(accountId) {
   console.log('Account Id: ' + accountId);
   const playerlifetime = await axios
@@ -37,6 +34,26 @@ async function lifetime(accountId) {
   return playerlifetime;
 }
 
+// Axios call function for season data
+async function season(accountId) {
+  console.log('Account Id: ' + accountId);
+  const playerseason = await axios
+    .get(data.url.season(accountId), {
+      headers: {
+        Authorization: 'Bearer ' + process.env.API_KEY,
+        Accept: 'application/vnd.api+json'
+      }
+    })
+    .then(response => {
+      console.log(response.data.data);
+      return response.data;
+    });
+  return playerseason;
+}
+
+// @route   GET api/pubg/player/PLAYERNAME
+// @desc    Return the Initial data
+// @access  Public
 router.get('/:playerName', async (req, res) => {
   const { playerName } = req.params;
 
@@ -54,6 +71,7 @@ router.get('/:playerName', async (req, res) => {
         const playerObject = data.handleData.buildPlayerObject(response.data);
         const accountId = playerObject.id;
         playerObject.lifetime = await lifetime(accountId);
+        playerObject.currentSeason = await season(accountId);
 
         return playerObject;
       });
