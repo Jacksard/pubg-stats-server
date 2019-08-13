@@ -23,7 +23,7 @@ router.get('/test/:thistest', (req, res) => {
 
 async function lifetime(accountId) {
   console.log('Account Id: ' + accountId);
-  const myresult = await axios
+  const playerlifetime = await axios
     .get(data.url.lifetime(accountId), {
       headers: {
         Authorization: 'Bearer ' + process.env.API_KEY,
@@ -34,7 +34,7 @@ async function lifetime(accountId) {
       console.log(response.data.data);
       return response.data.data;
     });
-  return myresult;
+  return playerlifetime;
 }
 
 router.get('/:playerName', async (req, res) => {
