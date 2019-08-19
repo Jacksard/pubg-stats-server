@@ -6,6 +6,8 @@ require('dotenv').config();
 
 const data = require('./exports');
 
+const Player = require('../../../models/Player');
+
 // @route   GET api/pubg/player/test/PLAYERNAME
 // @desc    TEST
 // @access  Public
@@ -58,6 +60,20 @@ router.get('/:playerName', async (req, res) => {
   const { playerName } = req.params;
 
   try {
+
+    // Check if player exists in DB
+    let player = await Player.findOne({ playerName })
+    if (player) {
+      console.log('Player Exists')
+    }
+    else {
+      console.log('Player not found')
+    }
+
+
+
+
+
     const response = await axios
       .get(data.url.player + `${playerName}`, {
         headers: {
