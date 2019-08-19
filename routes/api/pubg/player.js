@@ -11,11 +11,11 @@ const Player = require('../../../models/Player');
 // @route   GET api/pubg/player/test/PLAYERNAME
 // @desc    TEST
 // @access  Public
-router.get('/test/:thistest', (req, res) => {
-  const { thistest } = req.params;
+router.get('/test/:playerName', (req, res) => {
+  const { playerName } = req.params;
   res.json({
     msg: process.env.API_KEY,
-    msg2: data.url.player + thistest
+    msg2: data.url.player + playerName
   });
 });
 
@@ -59,21 +59,26 @@ async function season(accountId) {
 router.get('/:playerName', async (req, res) => {
   const { playerName } = req.params;
 
+  // Check if player exists in DB
+  // if true : db, else: no action.
+
+  let player = await Player.findOne({ playerName: playerName });
+  console.log('name: ' + playerName);
+  if (player) {
+    console.log('Player Exists: ' + player.playerName);
+    const playerAccountIdFromMongo = player.accountId;
+  } else {
+    console.log('Player not found');
+  }
+
+  const newplayer = new Player({
+    playerName: playerName,
+    accountId: playerAccountIdFromMongo
+  });
+
+  newplayer.save();
+
   try {
-
-    // Check if player exists in DB
-    let player = await Player.findOne({ playerName })
-    if (player) {
-      console.log('Player Exists')
-    }
-    else {
-      console.log('Player not found')
-    }
-
-
-
-
-
     const response = await axios
       .get(data.url.player + `${playerName}`, {
         headers: {
