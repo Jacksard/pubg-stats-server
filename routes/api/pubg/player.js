@@ -1,12 +1,15 @@
 const express = require('express');
 const router = express.Router();
 const axios = require('axios');
+const NodeCache = require('node-cache');
+
 
 require('dotenv').config();
 
 const data = require('./exports');
 
 const Player = require('../../../models/Player');
+
 
 // @route   GET api/pubg/player/test/PLAYERNAME
 // @desc    TEST
@@ -81,11 +84,13 @@ router.get('/:playerName', async (req, res) => {
         playerObject.lifetime = await lifetime(accountId);
         playerObject.currentSeason = await season(accountId);
 
+
+        // Check if player exists in DB
         if (player) {
           console.log('Player Exists: ' + player.playerName);
+          //  Add player to DB
         } else {
           console.log('Player not found');
-
           const newplayer = new Player({
             playerName: playerName,
             accountId: accountId
@@ -95,6 +100,34 @@ router.get('/:playerName', async (req, res) => {
 
         return playerObject;
       });
+
+    const playerCache = new NodeCache({ stdTTL: 6, checkperiod: 5 });
+    playerCache.set('myKey', response, (err, success) => {
+      if (!err && success) {
+        console.log('cache :' + success);
+      }
+    });
+    playerCache.set('myKey', { msg: 'key2' }, (err, success) => {
+      if (!err && success) {
+        console.log('cache :' + success);
+      }
+    });
+
+    setTimeout(() => {
+
+      playerCache.get('myKey', (err, data) => {
+        if (!err) {
+          if (data == undefined) {
+            console.log('Key Not Found')
+          } else {
+            console.log(data);
+
+          }
+        }
+      })
+    }, 4000);
+
+
 
     res.json(response);
   } catch (err) {
