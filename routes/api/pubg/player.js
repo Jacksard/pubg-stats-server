@@ -3,13 +3,11 @@ const router = express.Router();
 const axios = require('axios');
 const NodeCache = require('node-cache');
 
-
 require('dotenv').config();
 
 const data = require('./exports');
 
 const Player = require('../../../models/Player');
-
 
 // @route   GET api/pubg/player/test/PLAYERNAME
 // @desc    TEST
@@ -59,80 +57,92 @@ async function season(accountId) {
 // @route   GET api/pubg/player/PLAYERNAME
 // @desc    Return the Initial data
 // @access  Public
+
+// Initilize Node Cahce
+const playerCache = new NodeCache({ stdTTL: 10, checkperiod: 5 });
+
 router.get('/:playerName', async (req, res) => {
   const { playerName } = req.params;
 
-  // Check if player exists in DB
-  // if true : db, else: no action.
+  // Check if player exists in Cache
+  // if true : return data, else: perform api call and return.
 
   let player = await Player.findOne({ playerName: playerName });
   console.log('name: ' + playerName);
 
-  try {
-    const response = await axios
-      .get(data.url.player + `${playerName}`, {
-        headers: {
-          Authorization: 'Bearer ' + process.env.API_KEY,
-          Accept: 'application/vnd.api+json'
-        }
-      })
-      .then(async response => {
-        console.log(response.data);
+  const isCached = playerCache.get(playerName, (err, data) => {
+    if (err) {
+      return err;
+    } else {
+      return data;
+    }
+  });
 
-        const playerObject = data.handleData.buildPlayerObject(response.data);
-        const accountId = playerObject.id;
-        playerObject.lifetime = await lifetime(accountId);
-        playerObject.currentSeason = await season(accountId);
+  switch (isCached) {
+    case undefined:
+      try {
+        const response = await axios
+          .get(data.url.player + `${playerName}`, {
+            headers: {
+              Authorization: 'Bearer ' + process.env.API_KEY,
+              Accept: 'application/vnd.api+json'
+            }
+          })
+          .then(async response => {
+            console.log(response.data);
 
+            const playerObject = data.handleData.buildPlayerObject(
+              response.data
+            );
+            const accountId = playerObject.id;
+            playerObject.lifetime = await lifetime(accountId);
+            playerObject.currentSeason = await season(accountId);
 
-        // Check if player exists in DB
-        if (player) {
-          console.log('Player Exists: ' + player.playerName);
-          //  Add player to DB
-        } else {
-          console.log('Player not found');
-          const newplayer = new Player({
-            playerName: playerName,
-            accountId: accountId
+            // Check if player exists in DB
+            if (player) {
+              console.log('Player Exists: ' + player.playerName);
+              //  Add player to DB
+            } else {
+              console.log('Player not found');
+              const newplayer = new Player({
+                playerName: playerName,
+                accountId: accountId
+              });
+              newplayer.save();
+            }
+
+            return playerObject;
           });
-          newplayer.save();
-        }
-
-        return playerObject;
-      });
-
-    const playerCache = new NodeCache({ stdTTL: 6, checkperiod: 5 });
-    playerCache.set('myKey', response, (err, success) => {
-      if (!err && success) {
-        console.log('cache :' + success);
-      }
-    });
-    playerCache.set('myKey', { msg: 'key2' }, (err, success) => {
-      if (!err && success) {
-        console.log('cache :' + success);
-      }
-    });
-
-    setTimeout(() => {
-
-      playerCache.get('myKey', (err, data) => {
-        if (!err) {
-          if (data == undefined) {
-            console.log('Key Not Found')
-          } else {
-            console.log(data);
-
+        // set new Cache for player
+        playerCache.set(playerName, response, (err, success) => {
+          if (!err && success) {
+            console.log(success);
           }
-        }
-      })
-    }, 4000);
-
-
-
-    res.json(response);
-  } catch (err) {
-    console.log(err.message);
-    res.status(500).send('Server error');
+        });
+        res.json(response);
+      } catch (err) {
+        console.log(err.message);
+        res.status(500).send('Server error');
+        break;
+      }
+    case isCached: {
+      res.json(isCached);
+      break;
+    }
   }
 });
 module.exports = router;
+
+/* setTimeout(() => {
+
+            playerCache.get('J4cksard', (err, data) => {
+              if (!err) {
+                if (data == undefined) {
+                  console.log('Key Not Found')
+                } else {
+                  console.log(data);
+
+                }
+              }
+            })
+          }, 4000); */
