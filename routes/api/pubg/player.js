@@ -64,19 +64,6 @@ router.get('/:playerName', async (req, res) => {
 
   let player = await Player.findOne({ playerName: playerName });
   console.log('name: ' + playerName);
-  if (player) {
-    console.log('Player Exists: ' + player.playerName);
-    const playerAccountIdFromMongo = player.accountId;
-  } else {
-    console.log('Player not found');
-  }
-
-  const newplayer = new Player({
-    playerName: playerName,
-    accountId: playerAccountIdFromMongo
-  });
-
-  newplayer.save();
 
   try {
     const response = await axios
@@ -93,6 +80,18 @@ router.get('/:playerName', async (req, res) => {
         const accountId = playerObject.id;
         playerObject.lifetime = await lifetime(accountId);
         playerObject.currentSeason = await season(accountId);
+
+        if (player) {
+          console.log('Player Exists: ' + player.playerName);
+        } else {
+          console.log('Player not found');
+
+          const newplayer = new Player({
+            playerName: playerName,
+            accountId: accountId
+          });
+          newplayer.save();
+        }
 
         return playerObject;
       });
