@@ -59,7 +59,7 @@ async function season(accountId) {
 // @access  Public
 
 // Initilize Node Cahce
-const playerCache = new NodeCache({ stdTTL: 10, checkperiod: 5 });
+const playerCache = new NodeCache({ stdTTL: 30, checkperiod: 5 });
 
 router.get('/:playerName', async (req, res) => {
   const { playerName } = req.params;
