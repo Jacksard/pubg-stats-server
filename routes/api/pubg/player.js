@@ -54,12 +54,28 @@ async function season(accountId) {
   return playerseason;
 }
 
+function matchCall(matchId) {
+  console.log('Match Id: ' + matchId);
+  const match = axios
+    .get(data.url.match + matchId, {
+      headers: {
+        Authorization: 'Bearer ' + process.env.API_KEY,
+        Accept: 'application/vnd.api+json'
+      }
+    })
+    .then(response => {
+      console.log(response);
+      return response.data;
+    });
+  return match;
+}
+
 // @route   GET api/pubg/player/PLAYERNAME
 // @desc    Return the Initial data
 // @access  Public
 
 // Initilize Node Cahce
-const playerCache = new NodeCache({ stdTTL: 30, checkperiod: 5 });
+const playerCache = new NodeCache({ stdTTL: 5, checkperiod: 5 });
 
 router.get('/:playerName', async (req, res) => {
   const { playerName } = req.params;
@@ -97,7 +113,25 @@ router.get('/:playerName', async (req, res) => {
             const accountId = playerObject.id;
             playerObject.lifetime = await lifetime(accountId);
             playerObject.currentSeason = await season(accountId);
+            playerObject.matchesArray = [];
+            playerObject.matchesArray.push(
+              playerObject.matches.map(async item => {
+                await matchCall(item.id);
+              })
+            );
+            /* playerObject.matches.map(async match => {
+              const result = await matchCall(match.Id);
+              playerObject.matchesArray.push(result);
+            });
+ */
+            /* playerObject.matches.map(async match => {
+              console.log(match.id);
+              //const onMatch = await matchCall(match.id);
+              playerObject.matchesArray.push(await matchCall(match.id));
+            }); */
 
+            /* await matches(playerObject.matches[0].id);
+            console.log(oneMatch); */
             // Check if player exists in DB
             if (player) {
               console.log('Player Exists: ' + player.playerName);

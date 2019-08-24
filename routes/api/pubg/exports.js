@@ -29,7 +29,7 @@ module.exports = {
       // Account Id
       playerObject.id = res.data[0].id;
       // Last 5 matches
-      const matches = res.data[0].relationships.matches.data.slice(0, 5);
+      const matches = res.data[0].relationships.matches.data.slice(0, 2);
       playerObject.matches = matches;
       return playerObject;
     }
