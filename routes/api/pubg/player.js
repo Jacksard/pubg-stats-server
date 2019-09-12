@@ -54,7 +54,7 @@ async function season(accountId) {
   return playerseason;
 }
 
-function matchCall(matchId) {
+async function matchCall(matchId) {
   console.log('Match Id: ' + matchId);
   const match = axios
     .get(data.url.match + matchId, {
@@ -66,6 +66,10 @@ function matchCall(matchId) {
     .then(response => {
       console.log(response);
       return response.data;
+    })
+    .catch(error => {
+      console.error(error);
+      throw error;
     });
   return match;
 }
@@ -114,16 +118,14 @@ router.get('/:playerName', async (req, res) => {
             playerObject.lifetime = await lifetime(accountId);
             playerObject.currentSeason = await season(accountId);
             playerObject.matchesArray = [];
-            playerObject.matchesArray.push(
-              playerObject.matches.map(async item => {
-                await matchCall(item.id);
-              })
-            );
-            /* playerObject.matches.map(async match => {
-              const result = await matchCall(match.Id);
-              playerObject.matchesArray.push(result);
-            });
- */
+            console.log(playerObject.matches.length);
+            //const lastMatch = await matchCall(playerObject.matches[0].id);
+            //playerObject.matchesArray.push(lastMatch);
+            console.log('matches:');
+            console.log(playerObject.matches[0].id);
+            //const oneMatch = await matchCall(playerObject.matches[0].Id);
+            //playerObject.matchesArray.push(oneMatch);
+
             /* playerObject.matches.map(async match => {
               console.log(match.id);
               //const onMatch = await matchCall(match.id);
