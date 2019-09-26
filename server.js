@@ -3,7 +3,6 @@ const cors = require('cors');
 const connectDB = require('./db/db');
 const app = express();
 
-
 app.use(cors());
 
 // Connect Database
@@ -29,7 +28,7 @@ app.use('/api/pubg/match', require('./routes/api/pubg/match'));
 // Season API
 app.use('/api/pubg/season', require('./routes/api/pubg/season'));
 
-const PORT = process.env.port || 5000;
+const PORT = process.env.PORT || 5000;
 
 app.listen(PORT, () => {
   console.log(`Server is running on port: ${PORT}`);
