@@ -9,14 +9,12 @@ const data = require('./exports');
 
 const Player = require('../../../models/Player');
 
-// @route   GET api/pubg/player/test/PLAYERNAME
+// @route   GET api/pubg/player/test
 // @desc    TEST
 // @access  Public
-router.get('/test/:playerName', (req, res) => {
-  const { playerName } = req.params;
+router.get('/test', (req, res) => {
   res.json({
-    msg: process.env.API_KEY,
-    msg2: data.url.player + playerName
+    msg: 'Test Route: ' + new Date()
   });
 });
 
@@ -119,21 +117,10 @@ router.get('/:playerName', async (req, res) => {
             playerObject.currentSeason = await season(accountId);
             playerObject.matchesArray = [];
             console.log(playerObject.matches.length);
-            //const lastMatch = await matchCall(playerObject.matches[0].id);
-            //playerObject.matchesArray.push(lastMatch);
+
             console.log('matches:');
             console.log(playerObject.matches[0].id);
-            //const oneMatch = await matchCall(playerObject.matches[0].Id);
-            //playerObject.matchesArray.push(oneMatch);
 
-            /* playerObject.matches.map(async match => {
-              console.log(match.id);
-              //const onMatch = await matchCall(match.id);
-              playerObject.matchesArray.push(await matchCall(match.id));
-            }); */
-
-            /* await matches(playerObject.matches[0].id);
-            console.log(oneMatch); */
             // Check if player exists in DB
             if (player) {
               console.log('Player Exists: ' + player.playerName);
@@ -168,17 +155,3 @@ router.get('/:playerName', async (req, res) => {
   }
 });
 module.exports = router;
-
-/* setTimeout(() => {
-
-            playerCache.get('J4cksard', (err, data) => {
-              if (!err) {
-                if (data == undefined) {
-                  console.log('Key Not Found')
-                } else {
-                  console.log(data);
-
-                }
-              }
-            })
-          }, 4000); */
