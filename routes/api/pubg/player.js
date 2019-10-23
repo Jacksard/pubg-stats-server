@@ -77,16 +77,15 @@ async function matchCall(matchId) {
 // @access  Public
 
 // Initilize Node Cahce
-const playerCache = new NodeCache({ stdTTL: 5, checkperiod: 5 });
+const playerCache = new NodeCache({ stdTTL: 4, checkperiod: 4 });
 
 router.get('/:playerName', async (req, res) => {
   const { playerName } = req.params;
 
   // Check if player exists in Cache
-  // if true : return data, else: perform api call and return.
+  // if true ? return data : perform api call and return.
 
   let player = await Player.findOne({ playerName: playerName });
-  console.log('name: ' + playerName);
 
   const isCached = playerCache.get(playerName, (err, data) => {
     if (err) {
@@ -123,7 +122,7 @@ router.get('/:playerName', async (req, res) => {
 
             // Check if player exists in DB
             if (player) {
-              console.log('Player Exists: ' + player.playerName);
+              console.log('Player Exists in DB: ' + player.playerName);
               //  Add player to DB
             } else {
               console.log('Player not found');

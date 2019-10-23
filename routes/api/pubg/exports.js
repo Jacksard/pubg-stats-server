@@ -14,7 +14,7 @@ module.exports = {
       return (
         'https://api.pubg.com/shards/steam/players/' +
         accountId +
-        '/seasons/division.bro.official.pc-2018-04'
+        '/seasons/division.bro.official.pc-2018-05'
       );
     }
   },
